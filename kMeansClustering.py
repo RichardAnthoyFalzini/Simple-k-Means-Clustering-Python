@@ -21,6 +21,8 @@ def iterate_k_means(data_points, centroids, total_iteration):
         for index_point in range(0, total_points):
             distance = {}
             for index_centroid in range(0, k):
+		###
+		# calcolo parallelo
                 distance[index_centroid] = compute_euclidean_distance(data_points[index_point], centroids[index_centroid])
             label = assign_label_cluster(distance, data_points[index_point], centroids)
             centroids[label[0]] = compute_new_centroids(label[1], centroids[label[0]])
@@ -44,12 +46,16 @@ def create_centroids():
     centroids.append([50.0, 90.0])
     return np.array(centroids)
 
+def random_centroids(A,k):
+    return A[np.random.choice(A.shape[0], k , replace=False)]
+
 if __name__ == "__main__":
-    filename = os.path.dirname(__file__) + "\data.csv"
+    k=3
+    filename = os.path.join(os.path.dirname(__file__), "data.csv")
     data_points = np.genfromtxt(filename, delimiter=",")
-    centroids = create_centroids()
+    centroids = random_centroids(data_points,k)
     total_iteration = 100
-    
+    print("Random initialization cetroids:\n{}".format(centroids)) 
     [cluster_label, new_centroids] = iterate_k_means(data_points, centroids, total_iteration)
     print_label_data([cluster_label, new_centroids])
     print()
